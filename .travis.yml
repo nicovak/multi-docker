@@ -19,3 +19,15 @@ after_success:
   - docker push nicovak/multi-nginx
   - docker push nicovak/multi-server
   - docker push nicovak/multi-worker
+
+deploy:
+  provider: eslaticbeanstalk
+  region: eu-west-1
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-eu-west-1-623176901988
+  bucket_path: multi-docker
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
