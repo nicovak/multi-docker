@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t nicovak/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true nicovak/react-test npm test
+
+after_success:
+  - docker build -t nicovak/multi-client ./client
+  - docker build -t nicovak/multi-nginx ./nginx
+  - docker build -t nicovak/multi-server ./server
+  - docker build -t nicovak/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push nicovak/multi-client
+  - docker push nicovak/multi-nginx
+  - docker push nicovak/multi-server
+  - docker push nicovak/multi-worker
